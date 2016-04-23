@@ -12,6 +12,9 @@ import org.mongodb.morphia.annotations.Entity;
 @Entity
 public class Item extends BaseBean {
 
+    /** SUID */
+
+    private static final long serialVersionUID = 1L;
     /** nom de l'item. */
     private String nom;
 

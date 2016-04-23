@@ -4,6 +4,8 @@
  */
 package org.skabold.wildlyne.main;
 
+import javax.servlet.http.HttpSession;
+
 import org.skabold.wildlyne.mongo.AdminStore;
 
 /**
@@ -12,12 +14,17 @@ import org.skabold.wildlyne.mongo.AdminStore;
 
 public final class Game {
 
+    /** constante comportant l'url de base */
+    public final static String BASE_URL= "/WildlyneDungeon";
+
     /** l'unique instance de game. */
     private final static Game instance = new Game();
 
     /** instance de la base mongo. */
     private final AdminStore mongo;
 
+    /** instance du gestionnaire de sécurité (et du joueur). */
+    private final Securite securite;
 
     /**
      * constructeur privé initialisant le jeu.
@@ -31,6 +38,7 @@ public final class Game {
         System.setProperty(AdminStore.VARENV_MONGODB_PWD, "");
 
         mongo = new AdminStore();
+        securite = new Securite();
     }
 
     /**
@@ -48,9 +56,12 @@ public final class Game {
         return mongo;
     }
 
-    /** méthode de test du jsp TODO : à supprimer */
-    public String hello() {
-        return "Hello !";
+    /**
+     * méthode de test du jsp TODO : à supprimer.
+     * @return the string
+     */
+    public String hello(final HttpSession session) {
+        return "Hello " + securite.getJoueur(session).getPseudo();
     }
 
     /**
@@ -61,5 +72,12 @@ public final class Game {
         return instance;
     }
 
+    /**
+     * Gets the instance du gestionnaire de sécurité (et du joueur).
+     * @return the instance du gestionnaire de sécurité (et du joueur)
+     */
+    public Securite getSecurite() {
+        return securite;
+    }
 
 }

@@ -4,6 +4,8 @@
  */
 package org.skabold.wildlyne.beans;
 
+import java.io.Serializable;
+
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -12,7 +14,10 @@ import org.mongodb.morphia.annotations.Id;
  * Classe de base pour un bean mongo (doit contenir un object id).
  */
 @Entity
-public class BaseBean implements Cloneable {
+public class BaseBean implements Cloneable, Serializable {
+
+    /** SUID */
+    private static final long serialVersionUID = 1L;
 
     /** id - auto-generated, if not set (see ObjectId). */
     @Id

@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<!--  Header à mettre sur toutes les pages pour gérer la sécurité -->
 <%@ page import="org.skabold.wildlyne.main.*" %>
+<% if(Game.getInstance().getSecurite().checkSecurite(session, response)) { %>
+<!-- ------------- -->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -9,6 +13,7 @@
 </head>
 <body>
 	The Dreadful Wildlyne Dungeon is comming soon!
-	<br> <%=Game.getInstance().hello()%>
+	<br> <%=Game.getInstance().hello(session)%>
 </body>
 </html>
+<%}%>
