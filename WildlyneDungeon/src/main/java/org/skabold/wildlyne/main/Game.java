@@ -18,7 +18,7 @@ public final class Game {
     public final static String BASE_URL= "/WildlyneDungeon";
 
     /** l'unique instance de game. */
-    private final static Game instance = new Game();
+    private final static Game INSTANCE = new Game();
 
     /** instance de la base mongo. */
     private final AdminStore mongo;
@@ -69,7 +69,7 @@ public final class Game {
      * @return l'instance
      */
     public static Game getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -78,6 +78,20 @@ public final class Game {
      */
     public Securite getSecurite() {
         return securite;
+    }
+
+    /**
+     * Retrouve un message donné par son nom, ou retourne une chaine vide s'il n'y en a pas
+     * @param session session
+     * @param nomMessage message
+     * @return le texte du message
+     */
+    public String getMessage(final HttpSession session, final String nomMessage) {
+        String retVal = (String) session.getAttribute(nomMessage);
+        if (retVal == null) {
+            retVal = "";
+        }
+        return retVal;
     }
 
 }

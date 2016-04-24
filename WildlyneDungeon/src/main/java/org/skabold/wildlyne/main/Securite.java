@@ -5,6 +5,7 @@
 package org.skabold.wildlyne.main;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,10 +15,9 @@ import org.skabold.wildlyne.beans.Joueur;
 
 /**
  * The Class Securite. Singleton référencé par Game ; permet de gérer la
- * sécurité
+ * sécurité : login & création de joueurs
  */
 public class Securite {
-
 
     /**
      * Vérifie la sécurité : un joueur est-il authentifié dans la session ? Si
@@ -28,14 +28,18 @@ public class Securite {
      * @return true si ok
      */
     public boolean checkSecurite(final HttpSession session, final HttpServletResponse reponse) throws IOException {
+        final boolean retVal;
         if (session.isNew() || session.getAttribute("joueur") == null) {
             // Doit renvoyer vers la page de login
-            session.setAttribute("message", ""); // pas de message d'erreur
-            session.setAttribute("message_nouveauJoueur", ""); // pas de message d'erreur
+            session.removeAttribute("message_login"); // pas de message d'erreur
+            session.removeAttribute("message_nouveauJoueur"); // pas de message d'erreur
             reponse.sendRedirect(Game.BASE_URL + "/login.jsp");
-            return false;
+            retVal = false;
         }
-        return true;
+        else {
+            retVal = true;
+        }
+        return retVal;
     }
 
     /**
@@ -51,7 +55,7 @@ public class Securite {
 
         // Va rechercher le joueur de pseudo indiqué dans la base Mongo
         final Joueur found = Game.getInstance().getMongo().getDS().createQuery(Joueur.class).field("pseudo")
-                .equal(pseudo).get();
+                .equal(pseudo.toLowerCase(Locale.FRANCE)).get();
 
         if (found != null && found.getPassword().equals(password)) {
             // OK ! Stocke le joueur en session
@@ -60,7 +64,7 @@ public class Securite {
             reponse.sendRedirect(Game.BASE_URL + "/index.jsp");
         } else {
             // KO... Recommence, avec un message
-            session.setAttribute("message", "Joueur inconnu ou mauvais mot de passe");
+            session.setAttribute("message_login", "Joueur inconnu ou mauvais mot de passe");
             reponse.sendRedirect(Game.BASE_URL + "/login.jsp");
         }
     }
@@ -77,7 +81,7 @@ public class Securite {
      */
     public void createUser(final HttpSession session, final HttpServletResponse reponse, final String email,
             final String pseudo, final String password1, final String password2) throws IOException {
-        String erreur = "";
+        String erreur = null;
         // Les mots de passe doivent être d'au moins 8 caractères
         if (StringUtils.isEmpty(password1) || StringUtils.isEmpty(password2) || StringUtils.isEmpty(email)
                 || StringUtils.isEmpty(pseudo)) {
@@ -95,19 +99,20 @@ public class Securite {
             } else {
                 // Tout OK !
                 final Joueur joueur = new Joueur();
-                joueur.setEmail(email);
-                joueur.setPseudo(pseudo);
+                joueur.setEmail(email.toLowerCase(Locale.FRANCE));
+                joueur.setPseudo(pseudo.toLowerCase(Locale.FRANCE));
                 joueur.setPassword(password1);
                 Game.getInstance().getMongo().enregistre(joueur);
                 session.setAttribute("joueur", joueur);
                 session.setAttribute("message_nouveauJoueur", "");
                 reponse.sendRedirect(Game.BASE_URL + "/index.jsp");
-                return;
             }
         }
-        // Pas bon
-        session.setAttribute("message_nouveauJoueur", erreur);
-        reponse.sendRedirect(Game.BASE_URL + "/nouveauJoueur.jsp");
+        if (erreur != null) {
+            // Pas bon
+            session.setAttribute("message_nouveauJoueur", erreur);
+            reponse.sendRedirect(Game.BASE_URL + "/nouveauJoueur.jsp");
+        }
     }
 
     /**
