@@ -14,7 +14,9 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.skabold.wildlyne.beans.BaseBean;
+import org.skabold.wildlyne.beans.Heros;
 import org.skabold.wildlyne.beans.Item;
+import org.skabold.wildlyne.beans.Joueur;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -73,7 +75,6 @@ public class AdminStore implements java.lang.AutoCloseable {
 
         // Connexion à Mongo
         try {
-
             final List<MongoCredential> credentialsList = new ArrayList<>();
             if (!StringUtils.isEmpty(user)) {
                 final MongoCredential credentia = MongoCredential.createCredential(user, storeName, pwd.toCharArray());
@@ -129,6 +130,8 @@ public class AdminStore implements java.lang.AutoCloseable {
     private void mapBeans() {
         if (morphia != null) {
             morphia.map(Item.class);
+            morphia.map(Heros.class);
+            morphia.map(Joueur.class);
         }
     }
 

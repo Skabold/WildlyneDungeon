@@ -21,7 +21,7 @@ public class Securite {
 
     /**
      * Vérifie la sécurité : un joueur est-il authentifié dans la session ? Si
-     * oui, tout va bien. Si on, il faut rediriger vers la page de connexion
+     * oui, tout va bien. Sinon, il faut rediriger vers la page de connexion
      * @param session the session
      * @param reponse the reponse
      * @throws IOException probleme de redirection
@@ -82,7 +82,7 @@ public class Securite {
     public void createUser(final HttpSession session, final HttpServletResponse reponse, final String email,
             final String pseudo, final String password1, final String password2) throws IOException {
         String erreur = null;
-        // Les mots de passe doivent être d'au moins 8 caractères
+        // Les mots de passe doivent être d'au moins 6 caractères
         if (StringUtils.isEmpty(password1) || StringUtils.isEmpty(password2) || StringUtils.isEmpty(email)
                 || StringUtils.isEmpty(pseudo)) {
             erreur = "Tous les champs sont obligatoires";

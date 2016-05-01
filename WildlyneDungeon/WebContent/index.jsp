@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!--  Header à mettre sur toutes les pages pour gérer la sécurité -->
+<% // Header à mettre sur toutes les pages pour gérer la sécurité %>
 <%@ page
 	import="org.skabold.wildlyne.main.*, java.util.List, org.skabold.wildlyne.beans.*"%>
 <%
